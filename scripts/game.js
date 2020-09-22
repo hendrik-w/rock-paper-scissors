@@ -114,9 +114,11 @@ function calculateWinner(computerScore, playerScore){
     return `You win with ${playerScore} to ${computerScore} points.`
 }
 
+// MODEL
 function player(name="", score=0, play){
     
     let self = this;
+    
     self.name = name;
     self.score = score;
     self.play = play;
