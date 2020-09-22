@@ -43,33 +43,37 @@ function playerPlay(){
     return playerSelection;
 }
 
-function playRound(computerSelection, playerSelection, computerScore, playerScore){
-    if(computerSelection == playerSelection){
-        return `Nobody wins, you both had ${playerSelection}.`;
+function playRound(playerOne, playerTwo){
+    
+    let playerOneSelection = playerOne.play();
+    let playerTwoSelection = playerTwo.play();
+
+    if(playerOneSelection == playerTwoSelection){
+        return `Nobody wins, you both had ${playerTwoSelection}.`;
     }
-    if(computerSelection == "paper" && playerSelection == "rock"){
-        computerScore.value++;
-        return `You lose. Computers ${computerSelection} beats your ${playerSelection}`;
+    if(playerOneSelection == "paper" && playerTwoSelection == "rock"){
+        playerOne.score++;
+        return `You lose. Computers ${playerOneSelection} beats your ${playerTwoSelection}`;
     }
-    if(computerSelection == "paper" && playerSelection == "scissor"){
-        playerScore.value++;
-        return `You win. Computers ${computerSelection} losses against your ${playerSelection}`;
+    if(playerOneSelection == "paper" && playerTwoSelection == "scissor"){
+        playerTwo.score++;
+        return `You win. Computers ${playerOneSelection} losses against your ${playerTwoSelection}`;
     }
-    if(computerSelection == "rock" && playerSelection == "scissor"){
-        computerScore.value++;
-        return `You lose. Computers ${computerSelection} beats your ${playerSelection}`;
+    if(playerOneSelection == "rock" && playerTwoSelection == "scissor"){
+        playerOne.score++;
+        return `You lose. Computers ${playerOneSelection} beats your ${playerTwoSelection}`;
     }
-    if(computerSelection == "rock" && playerSelection == "paper"){
-        playerScore.value++;
-        return `You win. Computers ${computerSelection} losses against your${playerSelection}`;
+    if(playerOneSelection == "rock" && playerTwoSelection == "paper"){
+        playerTwo.score++;
+        return `You win. Computers ${playerOneSelection} losses against your${playerTwoSelection}`;
     }
-    if(computerSelection == "scissor" && playerSelection == "paper"){
-        computerScore.value++;
-        return `You lose. Computers ${computerSelection} beats your ${playerSelection}`;
+    if(playerOneSelection == "scissor" && playerTwoSelection == "paper"){
+        playerOne.score++;
+        return `You lose. Computers ${playerOneSelection} beats your ${playerTwoSelection}`;
     }
-    if(computerSelection == "scissor" && playerSelection == "rock"){
-        playerScore.value++;
-        return `You win. Computers ${computerSelection} losses against your ${playerSelection}`;
+    if(playerOneSelection == "scissor" && playerTwoSelection == "rock"){
+        playerTwo.score++;
+        return `You win. Computers ${playerTwoSelection} losses against your ${playerTwoSelection}`;
     }
 }
 
@@ -83,17 +87,15 @@ function game(){
         rounds = parseInt(rounds);
     }
 
-    let computerScore = {value : 0};
-    let playerScore = {value : 0};
+    let computerPlayer = new player("Computer", 0, computerPlay);
+    let humanPlayer = new player("Human", 0, playerPlay);
 
     for (let i = 0; i < rounds; i++) {
         alert(`Get ready for round ${i + 1}!`);
-        let computerSelection = computerPlay();
-        let playerSelection = playerPlay();
-        alert(playRound(computerSelection, playerSelection, computerScore, playerScore));
+        alert(playRound(computerPlayer, humanPlayer));
     }
 
-    alert(calculateWinner(computerScore.value, playerScore.value));
+    alert(calculateWinner(computerPlayer.score, humanPlayer.score));
     
 }
 
@@ -110,6 +112,16 @@ function calculateWinner(computerScore, playerScore){
         return `Nobody wins. You both had ${playerScore} points.`
     }
     return `You win with ${playerScore} to ${computerScore} points.`
+}
+
+function player(name="", score=0, play){
+    
+    let self = this;
+    self.name = name;
+    self.score = score;
+    self.play = play;
+
+    return self;
 }
 
 
