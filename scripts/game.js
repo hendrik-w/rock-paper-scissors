@@ -1,23 +1,6 @@
 function computerPlay(){
-    
-    let randomNumber = getRandomInt(3);
-    let computerSelection;
-
-    switch(randomNumber){
-        case 0:
-            computerSelection = "paper";
-            break;
-        case 1:
-            computerSelection = "rock";
-            break;
-        case 2: 
-            computerSelection = "scissor";
-            break;
-        default:
-            computerSelection = "paper";
-    }
-
-    return computerSelection;
+    const options = ['rock', 'paper', 'scissors'];
+    return options[getRandomInt(3)];
 }
 
 function playerPlay(){
@@ -118,7 +101,7 @@ function calculateWinner(computerScore, playerScore){
 function player(name="", score=0, play){
     
     let self = this;
-    
+
     self.name = name;
     self.score = score;
     self.play = play;
