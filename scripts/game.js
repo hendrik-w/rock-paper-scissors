@@ -1,35 +1,12 @@
 function computerPlay(){
-    const options = ['rock', 'paper', 'scissors'];
+    const options = ['rock', 'paper', 'scissor'];
     return options[getRandomInt(3)];
 }
 
-function playerPlay(){
-    let playerSelection;
-    let validSelection = false;
+function playRound(playerOne, playerTwo, humanSelection){
 
-    while(!validSelection){
-        playerSelection = prompt("Paper, rock or scissor? Choose wisely!");
-        playerSelection = playerSelection.toLowerCase();
-
-        switch (playerSelection){
-            case "paper":
-            case "rock":
-            case "scissor":
-                validSelection = true;
-                break;
-            default:
-                validSelection = false;
-                alert("Your choice wasn't valid. Please choose again.");
-        }
-    }
-    
-    return playerSelection;
-}
-
-function playRound(playerOne, playerTwo){
-    
     let playerOneSelection = playerOne.play();
-    let playerTwoSelection = playerTwo.play();
+    let playerTwoSelection = humanSelection;
 
     if(playerOneSelection == playerTwoSelection){
         return `Nobody wins, you both had ${playerTwoSelection}.`;
@@ -60,26 +37,51 @@ function playRound(playerOne, playerTwo){
     }
 }
 
-function game(){
+function game(rounds=0, playRound){
     
-    let rounds = prompt("Welcome to Paper, Rock and Scissors. Have Fun! Choose how many rounds you want to play:")
-    rounds = parseInt(rounds);
-   
-    while (isNaN(rounds) || rounds < 0){
-        rounds = prompt("Please enter a only (positive) numbers. Try again!");
-        rounds = parseInt(rounds);
+    let self = this;
+    
+    self.rounds = rounds;
+    self.roundsPlayed = 0;
+
+    self.playerOne = new player('Computer', computerPlay);
+    self.playerTwo = new player('Human');
+
+    let resultParagraph = document.querySelector('#result');
+
+    let roundHeadline = document.querySelector('#round-headline');
+    roundHeadline.innerHTML = `Get ready for round ${self.roundsPlayed + 1}`;
+
+    self.playRound =  function (humanSelection) {
+
+        if(self.roundsPlayed < self.rounds){
+            
+            resultParagraph.innerHTML = playRound(self.playerOne, self.playerTwo, humanSelection);
+            self.roundsPlayed++;
+
+            if(self.roundsPlayed < self.rounds){
+                roundHeadline.innerHTML = `Get ready for round ${self.roundsPlayed + 1}`;
+            }
+        }
+        if(self.roundsPlayed == self.rounds){
+            roundHeadline.innerHTML = calculateWinner(self.playerOne.score, self.playerTwo.score);
+            let replayButton = document.querySelector('#replay');
+            replayButton.style.display = "block";
+        }
+
     }
 
-    let computerPlayer = new player("Computer", 0, computerPlay);
-    let humanPlayer = new player("Human", 0, playerPlay);
+    return self;
+}
 
-    for (let i = 0; i < rounds; i++) {
-        alert(`Get ready for round ${i + 1}!`);
-        alert(playRound(computerPlayer, humanPlayer));
-    }
+function player(name='player', play=undefined){
+    let self = this;
 
-    alert(calculateWinner(computerPlayer.score, humanPlayer.score));
-    
+    self.name = name;
+    self.score = 0;
+    self.play = play;
+
+    return self;
 }
 
 // HELPER FUNCTIONS
@@ -97,17 +99,34 @@ function calculateWinner(computerScore, playerScore){
     return `You win with ${playerScore} to ${computerScore} points.`
 }
 
-// MODEL
-function player(name="", score=0, play){
-    
-    let self = this;
+function applyHandlers(){
 
-    self.name = name;
-    self.score = score;
-    self.play = play;
+    let sampleGame = new game(3, playRound);
 
-    return self;
+    let rock = document.querySelector('#rock');
+    let paper = document.querySelector('#paper');
+    let scissor = document.querySelector('#scissor');
+
+    rock.addEventListener('click', () => {
+        sampleGame.playRound('rock');
+    });
+
+    paper.addEventListener('click', () => {
+        sampleGame.playRound('paper');
+    });
+
+    scissor.addEventListener('click', () => {
+        sampleGame.playRound('scissor');
+    });
+
+    let replayButton = document.querySelector('#replay');
+    let resultParagraph = document.querySelector('#result');
+
+    replayButton.addEventListener('click', () => {
+        sampleGame = new game(3, playRound);
+        replayButton.style.display = "none";
+        resultParagraph.innerHTML = "";
+    })
 }
 
-
-game();
+applyHandlers();
